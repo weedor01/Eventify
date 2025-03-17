@@ -1,0 +1,2 @@
+# Eventify
+Event Planner website
