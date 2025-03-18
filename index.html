@@ -1,135 +1,419 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Planner</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color:#7D0A0A;
-            color: white;
-            text-align: center;
-            padding: 1em 0;
-        }
-        .container {
-            width: 80%;
-            margin: 20px auto;
-            background: #F1E3D3;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .event-form {
-            display: flex;
-            flex-direction: column;
-        }
-        .event-form input, .event-form textarea {
-            margin: 10px 0;
-            padding: 10px;
-            width: 100%;
-        }
-        .event-form button {
-            background: #1B4D3E;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-        }
-        .event-list {
-            margin-top: 20px;
-        }
-        .event-item {
-            background: #ddd;
-            padding: 10px;
-            margin: 10px 0;
-            position: relative;
-        }
-        .delete-btn {
-            background: #1B4D3E;
-            color: white;
-            border: none;
-            padding: 5px;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-
-        footer {
-            background-color: #7D0A0A;
-            color: white;
-            text-align: center;
-            padding: 1em 0;
-            margin-top: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eventify</title>
+  <style>
+    /* Flexbox layout for the entire page */
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      font-family: Arial, sans-serif;
+      background-color: #FBFBFB;
+    }
+    main {
+      flex: 1;
+    }
+    header {
+      background-color: #872341;
+      color: white;
+      text-align: center;
+      padding: 1em 0;
+    }
+    .container, .auth-container, .reset-container {
+      width: 70%;
+      margin: 20px auto;
+      background: #FFDAB3;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .event-form, #authForm, #resetPasswordForm {
+      display: flex;
+      flex-direction: column;
+    }
+    .event-form input, .event-form textarea,
+    #authForm input, #resetPasswordForm input {
+      margin: 10px 0;
+      padding: 10px;
+      width: 98%;
+    }
+    .event-form button, #authForm button, #resetPasswordForm button, .logout-button {
+      background: #09122C;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+    .event-list {
+      margin-top: 20px;
+    }
+    .event-item {
+      background: #A9BFA8;
+      padding: 10px;
+      margin: 10px 0;
+      position: relative;
+    }
+    .delete-btn, .edit-btn, .complete-btn {
+      color: white;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+    }
+    .delete-btn {
+      background: red;
+      right: 10px;
+    }
+    .edit-btn {
+      background: navy;
+      right: 70px;
+    }
+    .complete-btn {
+      background-color: #872341;
+      right: 140px;
+    }
+    .completed {
+      background: lightgreen !important;
+      text-decoration: line-through;
+    }
+    .logout-button {
+      float: right;
+      margin-top: -10px;
+    }
+    footer {
+      background-color: #872341;
+      color: white;
+      text-align: center;
+      padding: 1em 0;
+      margin-top: 20px;
+    }
+    /* Additional styling for reset password container */
+    .reset-container {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Eventify</h1>
-        <h2>Plan Ahead, Stress Less. </h2>
-    </header>
-    <div class="container">
-        <h2>Create an Event</h2>
-        <form class="event-form" id="eventForm">
-            <input type="text" id="eventName" placeholder="Event Name" required>
-            <input type="date" id="eventDate" required>
-            <textarea id="eventDescription" placeholder="Event Description" required></textarea>
-            <button type="submit">Add Event</button>
-        </form>
-        <h2>Upcoming Events</h2>
-        <div class="event-list" id="eventList"></div>
+  <header>
+    <h1>EVENTIFY</h1>
+    <h2>Your Event, Perfectly Organized</h2>
+  </header>
+  <main>
+    <!-- Authentication Container -->
+    <div id="authContainer" class="auth-container">
+      <h2 id="authTitle">Sign Up</h2>
+      <form id="authForm">
+        <input type="text" id="authUsername" placeholder="Enter username" required>
+        <input type="password" id="authPassword" placeholder="Enter password" required>
+        <!-- Security Answer field for sign up -->
+        <div id="securityAnswerContainer">
+          <input type="text" id="authSecurityAnswer" placeholder="Answer: What is your favorite color?" required>
+        </div>
+        <div id="confirmPasswordContainer">
+          <input type="password" id="authConfirmPassword" placeholder="Confirm password" required>
+        </div>
+        <button type="submit" id="authButton">Sign Up</button>
+      </form>
+      <p id="toggleAuth">
+        Already have an account? <a href="#" id="switchToLogin">Login here</a>
+      </p>
+      <!-- Forgot Password link (shown in login mode) -->
+      <p id="forgotPasswordContainer" style="display:none;"><a href="#" id="forgotPasswordLink">Forgot Password?</a></p>
     </div>
-    <footer>
-        <p>Jonathan Weedor © 2025. All Rights Reserved.</p>
-    </footer>
-    <script>
-        document.getElementById('eventForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('eventName').value;
-            const date = document.getElementById('eventDate').value;
-            const description = document.getElementById('eventDescription').value;
-            const eventDate = new Date(date + 'T00:00:00');
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            if (eventDate < today) {
-                alert("Cannot add past events!");
-                return;
-            }
-            
-            const eventItem = document.createElement('div');
-            eventItem.classList.add('event-item');
-            eventItem.innerHTML = `<h3>${name}</h3><p>${date}</p><p>${description}</p><button class="delete-btn">Delete</button>`;
-            
-            document.getElementById('eventList').appendChild(eventItem);
-            document.getElementById('eventForm').reset();
-            
-            eventItem.querySelector('.delete-btn').addEventListener('click', function() {
-                eventItem.remove();
-            });
-        });
-        
-        function removeExpiredEvents() {
-            const events = document.querySelectorAll('.event-item');
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            events.forEach(event => {
-                const eventDate = new Date(event.querySelector('p').innerText + 'T00:00:00');
-                if (eventDate < today) {
-                    event.remove();
-                }
-            });
+
+    <!-- Reset Password Container -->
+    <div id="resetContainer" class="reset-container">
+      <h2>Reset Password</h2>
+      <form id="resetPasswordForm">
+        <input type="text" id="resetUsername" placeholder="Enter your username" required>
+        <input type="text" id="resetSecurityAnswer" placeholder="What is your favorite color?" required>
+        <input type="password" id="resetPassword" placeholder="Enter new password" required>
+        <input type="password" id="resetConfirmPassword" placeholder="Confirm new password" required>
+        <button type="submit">Reset Password</button>
+      </form>
+      <p><a href="#" id="backToLogin">Back to Login</a></p>
+    </div>
+
+    <!-- Event Container (shown after login) -->
+    <div id="eventContainer" class="container" style="display:none;">
+      <button id="logoutButton" class="logout-button">Logout</button>
+      <h2>Create an Event</h2>
+      <form class="event-form" id="eventForm">
+        <input type="text" id="eventName" placeholder="Enter event name" required>
+        <input type="date" id="eventDate" required>
+        <textarea id="eventDescription" placeholder="Enter event details" required></textarea>
+        <button type="submit">Add Event</button>
+      </form>
+      <h2>Upcoming Events</h2>
+      <div class="event-list" id="eventList"></div>
+    </div>
+  </main>
+  <footer>
+    <p>Jonathan Weedor, Jr © 2025. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // --- Utility functions for localStorage ---
+    function loadUsers() {
+      return JSON.parse(localStorage.getItem('users')) || {};
+    }
+    function saveUsers(users) {
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+    function getCurrentUser() {
+      return localStorage.getItem('currentUser');
+    }
+    function setCurrentUser(username) {
+      localStorage.setItem('currentUser', username);
+    }
+    function logout() {
+      localStorage.removeItem('currentUser');
+      showAuth();
+    }
+
+    // --- Authentication Handling ---
+    let isSignUpMode = true;
+    const authForm = document.getElementById('authForm');
+    const authTitle = document.getElementById('authTitle');
+    const authButton = document.getElementById('authButton');
+    const confirmPasswordContainer = document.getElementById('confirmPasswordContainer');
+    const securityAnswerContainer = document.getElementById('securityAnswerContainer');
+    const toggleAuth = document.getElementById('toggleAuth');
+    const forgotPasswordContainer = document.getElementById('forgotPasswordContainer');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+
+    // Use event delegation on toggleAuth to capture clicks on the mode toggle link
+    toggleAuth.addEventListener('click', function(e) {
+      if (e.target && e.target.id === "switchToLogin") {
+        e.preventDefault();
+        isSignUpMode = !isSignUpMode;
+        if (isSignUpMode) {
+          authTitle.innerText = 'Sign Up';
+          authButton.innerText = 'Sign Up';
+          confirmPasswordContainer.style.display = 'block';
+          securityAnswerContainer.style.display = 'block';
+          toggleAuth.innerHTML = 'Already have an account? <a href="#" id="switchToLogin">Login here</a>';
+          forgotPasswordContainer.style.display = 'none';
+        } else {
+          authTitle.innerText = 'Login';
+          authButton.innerText = 'Login';
+          confirmPasswordContainer.style.display = 'none';
+          securityAnswerContainer.style.display = 'none';
+          toggleAuth.innerHTML = 'Don\'t have an account? <a href="#" id="switchToLogin">Sign up here</a>';
+          forgotPasswordContainer.style.display = 'block';
         }
-        
-        setInterval(removeExpiredEvents, 60000); // Check every minute
-    </script>
+      }
+    });
+
+    authForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('authUsername').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const users = loadUsers();
+      if (isSignUpMode) {
+        const confirmPassword = document.getElementById('authConfirmPassword').value;
+        const securityAnswer = document.getElementById('authSecurityAnswer').value.trim();
+        if (password !== confirmPassword) {
+          alert('Passwords do not match!');
+          return;
+        }
+        if (users[username]) {
+          alert('Username already exists!');
+          return;
+        }
+        // Store security answer along with password and events
+        users[username] = { password: password, securityAnswer: securityAnswer, events: [] };
+        saveUsers(users);
+        setCurrentUser(username);
+        showEventSection();
+      } else {
+        if (!users[username] || users[username].password !== password) {
+          alert('Invalid username or password!');
+          return;
+        }
+        setCurrentUser(username);
+        showEventSection();
+      }
+    });
+
+    // --- Reset Password Handling ---
+    const resetContainer = document.getElementById('resetContainer');
+    const resetForm = document.getElementById('resetPasswordForm');
+    const backToLogin = document.getElementById('backToLogin');
+
+    forgotPasswordLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('authContainer').style.display = 'none';
+      resetContainer.style.display = 'block';
+    });
+
+    backToLogin.addEventListener('click', function(e) {
+      e.preventDefault();
+      resetContainer.style.display = 'none';
+      showAuth();
+    });
+
+    resetForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('resetUsername').value.trim();
+      const secAnswer = document.getElementById('resetSecurityAnswer').value.trim();
+      const newPassword = document.getElementById('resetPassword').value;
+      const confirmNewPassword = document.getElementById('resetConfirmPassword').value;
+      const users = loadUsers();
+
+      if (!users[username]) {
+        alert('Username does not exist!');
+        return;
+      }
+      if (users[username].securityAnswer !== secAnswer) {
+        alert('Incorrect security answer!');
+        return;
+      }
+      if (newPassword !== confirmNewPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+      // Update password and return to login
+      users[username].password = newPassword;
+      saveUsers(users);
+      alert('Password successfully reset! Please log in with your new password.');
+      resetContainer.style.display = 'none';
+      showAuth();
+    });
+
+    function showAuth() {
+      document.getElementById('authContainer').style.display = 'block';
+      document.getElementById('eventContainer').style.display = 'none';
+      resetContainer.style.display = 'none';
+    }
+    function showEventSection() {
+      document.getElementById('authContainer').style.display = 'none';
+      document.getElementById('eventContainer').style.display = 'block';
+      resetContainer.style.display = 'none';
+      renderEvents();
+    }
+
+    // --- Event Handling ---
+    const eventForm = document.getElementById('eventForm');
+    const eventList = document.getElementById('eventList');
+
+    eventForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('eventName').value;
+      const date = document.getElementById('eventDate').value;
+      const description = document.getElementById('eventDescription').value;
+      const eventDate = new Date(date + 'T00:00:00');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (eventDate < today) {
+        alert("Cannot add past events!");
+        return;
+      }
+      const newEvent = { name, date, description, completed: false };
+      addEvent(newEvent);
+      eventForm.reset();
+    });
+
+    function addEvent(eventObj) {
+      const currentUser = getCurrentUser();
+      const users = loadUsers();
+      if (users[currentUser]) {
+        users[currentUser].events.push(eventObj);
+        saveUsers(users);
+        renderEvents();
+      }
+    }
+
+    function renderEvents() {
+      eventList.innerHTML = '';
+      const currentUser = getCurrentUser();
+      const users = loadUsers();
+      if (users[currentUser]) {
+        users[currentUser].events.forEach((eventObj, index) => {
+          const eventItem = document.createElement('div');
+          eventItem.classList.add('event-item');
+          if (eventObj.completed) {
+            eventItem.classList.add('completed');
+          }
+          eventItem.innerHTML = `<h3>${eventObj.name}</h3>
+                                 <p>${eventObj.date}</p>
+                                 <p>${eventObj.description}</p>
+                                 <button class="edit-btn">Edit</button>
+                                 <button class="complete-btn">Mark as Complete</button>
+                                 <button class="delete-btn">Delete</button>`;
+          eventList.appendChild(eventItem);
+
+          eventItem.querySelector('.delete-btn').addEventListener('click', function() {
+            deleteEvent(index);
+          });
+
+          eventItem.querySelector('.edit-btn').addEventListener('click', function() {
+            document.getElementById('eventName').value = eventObj.name;
+            document.getElementById('eventDate').value = eventObj.date;
+            document.getElementById('eventDescription').value = eventObj.description;
+            deleteEvent(index);
+          });
+
+          eventItem.querySelector('.complete-btn').addEventListener('click', function() {
+            toggleComplete(index);
+          });
+        });
+      }
+    }
+
+    function deleteEvent(index) {
+      const currentUser = getCurrentUser();
+      const users = loadUsers();
+      if (users[currentUser]) {
+        users[currentUser].events.splice(index, 1);
+        saveUsers(users);
+        renderEvents();
+      }
+    }
+
+    function toggleComplete(index) {
+      const currentUser = getCurrentUser();
+      const users = loadUsers();
+      if (users[currentUser]) {
+        users[currentUser].events[index].completed = !users[currentUser].events[index].completed;
+        saveUsers(users);
+        renderEvents();
+      }
+    }
+
+    function removeExpiredEvents() {
+      const currentUser = getCurrentUser();
+      const users = loadUsers();
+      if (users[currentUser]) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        users[currentUser].events = users[currentUser].events.filter(eventObj => {
+          const eventDate = new Date(eventObj.date + 'T00:00:00');
+          return eventDate >= today;
+        });
+        saveUsers(users);
+        renderEvents();
+      }
+    }
+
+    setInterval(removeExpiredEvents, 60000); // Check every minute
+
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      logout();
+    });
+
+    // --- On Page Load ---
+    if (getCurrentUser()) {
+      showEventSection();
+    } else {
+      showAuth();
+    }
+  </script>
 </body>
 </html>
-
